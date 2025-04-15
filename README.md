@@ -8,6 +8,12 @@ Get a list of all installed programs:
 Get-WmiObject -Query "SELECT * FROM Win32_Product" | Select-Object -Property Name
 ```
 
+### Uninstall Software
+Uninstall a specific program using command line:
+```powershell
+wmic product where "name='NomeProgramma'" call uninstall
+```
+
 ### Group Policy Reports
 Generate a text report of Group Policy settings for a specific user:
 ```powershell
