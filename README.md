@@ -14,6 +14,11 @@ Uninstall a specific program using command line:
 wmic product where "name='NomeProgramma'" call uninstall
 ```
 
+Uninstall SAP silently:
+```powershell
+"C:\Program Files (x86)\SAP\SapSetup\Setup\NwSapSetup.exe" /all /Silent /uninstall
+```
+
 ### Group Policy Reports
 Generate a text report of Group Policy settings for a specific user:
 ```powershell
