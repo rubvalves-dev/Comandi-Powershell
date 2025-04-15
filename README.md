@@ -29,6 +29,11 @@ Get a list of all installed programs:
 Get-WmiObject -Query "SELECT * FROM Win32_Product" | Select-Object -Property Name
 ```
 
+Get detailed information about installed programs (including version, publisher, and install date):
+```powershell
+Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate
+```
+
 ### Uninstall Software
 Uninstall a specific program using command line:
 ```powershell
