@@ -2,6 +2,27 @@
 
 ## Software and System Management
 
+### Package Manager (Chocolatey)
+Install Chocolatey package manager:
+```powershell
+@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+```
+
+Search for available packages:
+```powershell
+choco search <package-name>
+```
+
+Install a package:
+```powershell
+choco install <package-name> -y
+```
+
+List installed packages:
+```powershell
+choco list --local-only
+```
+
 ### List Installed Programs
 Get a list of all installed programs:
 ```powershell
