@@ -27,7 +27,7 @@ choco list --local-only
 Silent installation and configuration of UltraVNC:
 ```powershell
 UltraVNC_1_2_40_X64_Setup.exe /silent /loadinf="C:\temp\config.inf"
-xcopy /Y setup.ini "C:\Program Files\uvnc bvba\UltraVNC\"
+xcopy /Y ultravnc.ini "C:\Program Files\uvnc bvba\UltraVNC\"
 "C:\Program Files\uvnc bvba\UltraVNC\winvnc.exe" /silent
 "C:\Program Files\uvnc bvba\UltraVNC\unins000.exe" /silent
 net stop uvnc_service
