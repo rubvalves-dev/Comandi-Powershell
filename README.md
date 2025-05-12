@@ -67,6 +67,34 @@ Generate an HTML report of Group Policy settings:
 gpresult /user dominio\user /h report.html
 ```
 
+### Font Installation
+Install all TTF fonts from a specified folder:
+```powershell
+# Percorso della cartella che contiene i font
+$fontFolder = "C:\Temp\static\"
+
+# Ottieni tutti i file TTF nella cartella
+$fontFiles = Get-ChildItem -Path $fontFolder -Filter *.ttf
+
+# Installa ogni font
+foreach ($font in $fontFiles) {
+    $fontPath = $font.FullName
+    Write-Host "Installando: $fontPath"
+    
+    # Copia il font nella cartella di sistema
+    Copy-Item -Path $fontPath -Destination "$env:SystemRoot\Fonts" -Force
+    
+    # Aggiungi il font al registro di sistema
+    $fontName = $font.Name
+    $regPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+    Set-ItemProperty -Path $regPath -Name $fontName -Value $fontPath
+    
+    Write-Host "Installazione completata per: $fontPath"
+}
+
+Write-Host "Tutti i font sono stati installati!"
+```
+
 ### Power Management
 Disable hibernation on the system:
 ```powershell
