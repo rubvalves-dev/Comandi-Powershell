@@ -73,6 +73,9 @@ Install all TTF fonts from a specified folder:
 $fontFolder = "\\ritsrvvshr01\rubdata\Utilities\Preparazione PC\Open_Sans\static"  # Percorso condiviso
 $tempFolder = "C:\Temp"
 
+# Inizia la registrazione
+Start-Transcript -Path "C:\Temp\FontInstallLog.txt" -Append
+
 # Scarica i font dal percorso condiviso al temp
 Copy-Item -Path $fontFolder\*.ttf -Destination $tempFolder -Force
 
@@ -87,6 +90,7 @@ foreach ($font in $fontFiles) {
 
     if (Test-Path -Path $destinationPath) {
         Write-Host "$fontName è già installato."
+        Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1001 -EntryType Information -Message "$fontName è già installato."
     } else {
         Write-Host "Installando: $fontName"
         Copy-Item -Path $fontPath -Destination $destinationPath -Force
@@ -95,10 +99,15 @@ foreach ($font in $fontFiles) {
         Set-ItemProperty -Path $regPath -Name $fontName -Value $fontName
         
         Write-Host "Installazione completata per: $fontName"
+        Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1002 -EntryType Information -Message "Installazione completata per: $fontName"
     }
 }
 
 Write-Host "Tutti i font sono stati verificati e installati!"
+Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1003 -EntryType Information -Message "Tutti i font sono stati verificati e installati!"
+
+# Termina la registrazione
+Stop-Transcript
 
 ```
 
