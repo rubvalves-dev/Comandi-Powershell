@@ -71,7 +71,6 @@ gpresult /user dominio\user /h report.html
 Install all TTF fonts from a specified folder:
 ```powershell
 # Percorso della cartella che contiene i font
-# Percorso della cartella che contiene i font
 $fontFolder = "C:\Temp\static\"
 
 # Ottieni tutti i file TTF nella cartella
