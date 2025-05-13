@@ -76,8 +76,18 @@ $tempFolder = "C:\Temp"
 # Inizia la registrazione
 Start-Transcript -Path "C:\Temp\FontInstallLog.txt" -Append
 
+Write-Host "Inizio script di installazione font"
+
 # Scarica i font dal percorso condiviso al temp
-Copy-Item -Path $fontFolder\*.ttf -Destination $tempFolder -Force
+try {
+    Copy-Item -Path $fontFolder\*.ttf -Destination $tempFolder -Force
+    Write-Host "Font copiati con successo"
+} catch {
+    Write-Host "Errore durante la copia dei font: $_"
+    Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1000 -EntryType Error -Message "Errore durante la copia dei font: $_"
+    Stop-Transcript
+    exit
+}
 
 $fontFiles = Get-ChildItem -Path $tempFolder -Filter *.ttf
 
@@ -93,13 +103,16 @@ foreach ($font in $fontFiles) {
         Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1001 -EntryType Information -Message "$fontName è già installato."
     } else {
         Write-Host "Installando: $fontName"
-        Copy-Item -Path $fontPath -Destination $destinationPath -Force
-
-        $regPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
-        Set-ItemProperty -Path $regPath -Name $fontName -Value $fontName
-        
-        Write-Host "Installazione completata per: $fontName"
-        Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1002 -EntryType Information -Message "Installazione completata per: $fontName"
+        try {
+            Copy-Item -Path $fontPath -Destination $destinationPath -Force
+            $regPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+            Set-ItemProperty -Path $regPath -Name $fontName -Value $fontName
+            Write-Host "Installazione completata per: $fontName"
+            Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1002 -EntryType Information -Message "Installazione completata per: $fontName"
+        } catch {
+            Write-Host "Errore durante l'installazione di $fontName: $_"
+            Write-EventLog -LogName Application -Source "FontInstallScript" -EventID 1000 -EntryType Error -Message "Errore durante l'installazione di $fontName: $_"
+        }
     }
 }
 
