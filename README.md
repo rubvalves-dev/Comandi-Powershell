@@ -70,30 +70,36 @@ gpresult /user dominio\user /h report.html
 ### Font Installation
 Install all TTF fonts from a specified folder:
 ```powershell
-# Percorso della cartella che contiene i font
-$fontFolder = "C:\Temp\static\"
+$fontFolder = "\\ritsrvvshr01\rubdata\Utilities\Preparazione PC\Open_Sans\static"  # Percorso condiviso
+$tempFolder = "C:\Temp"
 
-# Ottieni tutti i file TTF nella cartella
-$fontFiles = Get-ChildItem -Path $fontFolder -Filter *.ttf
+# Scarica i font dal percorso condiviso al temp
+Copy-Item -Path $fontFolder\*.ttf -Destination $tempFolder -Force
 
-# Installa ogni font
+$fontFiles = Get-ChildItem -Path $tempFolder -Filter *.ttf
+
 foreach ($font in $fontFiles) {
     $fontPath = $font.FullName
     $fontName = $font.Name
-    Write-Host "Installando: $fontName"
-    
-    # Copia il font nella cartella di sistema
+    Write-Host "Verificando: $fontName"
+
     $destinationPath = Join-Path -Path "$env:SystemRoot\Fonts" -ChildPath $fontName
-    Copy-Item -Path $fontPath -Destination $destinationPath -Force
-    
-    # Aggiungi il font al registro di sistema
-    $regPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
-    Set-ItemProperty -Path $regPath -Name $fontName -Value $fontName
-    
-    Write-Host "Installazione completata per: $fontName"
+
+    if (Test-Path -Path $destinationPath) {
+        Write-Host "$fontName è già installato."
+    } else {
+        Write-Host "Installando: $fontName"
+        Copy-Item -Path $fontPath -Destination $destinationPath -Force
+
+        $regPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+        Set-ItemProperty -Path $regPath -Name $fontName -Value $fontName
+        
+        Write-Host "Installazione completata per: $fontName"
+    }
 }
 
-Write-Host "Tutti i font sono stati installati!"
+Write-Host "Tutti i font sono stati verificati e installati!"
+
 ```
 
 ### Power Management
@@ -131,6 +137,27 @@ UsoClient ScanInstallWait
 Get detailed information about a specific computer:
 ```powershell
 Get-ADComputer -Identity "RUB0138" -Properties *
+```
+
+Export all Active Directory users with their OUs:
+```powershell
+$utenti = Get-ADUser -Filter * -Property DisplayName, Name, Surname, SamAccountName, EmailAddress, DistinguishedName
+
+# Seleziona le proprietà desiderate e isola le OU
+$utentiSelezionati = $utenti | Select-Object DisplayName, Name, Surname, SamAccountName, EmailAddress,
+    @{Name='OU'; Expression={ 
+        # Estrai il DistinguishedName
+        $dn = $_.DistinguishedName
+        
+        # Split il DN in base alla virgola e filtra solo le OU
+        $ouList = $dn -split ',' | Where-Object { $_ -like 'OU=*' }
+        
+        # Restituisci le OU come una stringa separata da un punto e virgola
+        return ($ouList -join '; ')
+    }}
+
+# Esporta in un file CSV
+$utentiSelezionati | Export-Csv -Path "C:\temp\UtentiAD.csv" -NoTypeInformation -Encoding UTF8
 ```
 
 ### Microsoft Office Information
