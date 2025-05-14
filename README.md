@@ -27,10 +27,14 @@ choco list --local-only
 Silent installation and configuration of UltraVNC:
 ```powershell
 UltraVNC_1_2_40_X64_Setup.exe /silent /loadinf="C:\temp\config.inf"
+```
+```powershell
 xcopy /Y ultravnc.ini "C:\Program Files\uvnc bvba\UltraVNC\"
-"C:\Program Files\uvnc bvba\UltraVNC\winvnc.exe" /silent
-"C:\Program Files\uvnc bvba\UltraVNC\unins000.exe" /silent
+```
+```powershell
 net stop uvnc_service
+```
+```powershell
 net start uvnc_service
 ```
 
@@ -159,6 +163,12 @@ UsoClient ScanInstallWait
 Get detailed information about a specific computer:
 ```powershell
 Get-ADComputer -Identity "RUB0138" -Properties *
+```
+
+Get all enabled computers in the domain:
+```powershell
+# Ottieni solo i computer abilitati nel dominio
+Get-ADComputer -Filter {Enabled -eq $true} | Select-Object Name, DNSHostName, OperatingSystem
 ```
 
 Export all Active Directory users with their OUs:
