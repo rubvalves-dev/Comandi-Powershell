@@ -216,3 +216,63 @@ $profile = Get-WmiObject -Class Win32_UserProfile | Where-Object { $_.LocalPath 
 $profile.Delete()
 ```
 
+### Remote Management
+Configure WinRM and enable PowerShell Remoting:
+```powershell
+# Configura WinRM con impostazioni di base
+winrm quickconfig -q
+```
+
+# Configura il servizio per l'avvio automatico e lo avvia
+```powershell
+Set-Service WinRM -StartupType Automatic
+```
+```powershell
+Start-Service WinRM
+```
+
+# Abilita PowerShell Remoting
+```powershell
+Enable-PSRemoting -Force
+```
+
+# Configura il listener WinRM
+```powershell
+winrm create winrm/config/listener?Address=*+Transport=HTTP
+```
+
+# Configura le impostazioni di sicurezza di base
+```powershell
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+```
+
+# Apri le porte nel firewall di Windows
+```powershell
+New-NetFirewallRule -DisplayName "Windows Remote Management (HTTP-In)" -Name "Windows Remote Management (HTTP-In)" -Profile Any -LocalPort 5985 -Protocol TCP
+```
+
+# Verifica lo stato del servizio WinRM
+```powershell
+Get-Service WinRM
+```
+
+Connettersi a un computer remoto:
+# Connessione base a un computer remoto
+```powershell
+Enter-PSSession -ComputerName "NomeComputer"
+```
+
+# Connessione usando un account specifico
+```powershell
+Enter-PSSession -ComputerName "NomeComputer" -Credential "DOMINIO\Utente"
+```
+
+# Eseguire un comando su un computer remoto senza aprire una sessione
+```powershell
+Invoke-Command -ComputerName "NomeComputer" -ScriptBlock { Get-Service } -Credential (Get-Credential)
+```
+# Connessione a più computer contemporaneamente
+```powershell
+Invoke-Command -ComputerName "PC1", "PC2", "PC3" -ScriptBlock { Get-Service } -Credential (Get-Credential)
+```
+
