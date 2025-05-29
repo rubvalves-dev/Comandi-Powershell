@@ -38,6 +38,11 @@ net stop uvnc_service
 net start uvnc_service
 ```
 
+Silent uninstallation of UltraVNC:
+```powershell
+"C:\Program Files\uvnc bvba\UltraVNC\unins000.exe" /silent
+```
+
 ### List Installed Programs
 Get a list of all installed programs:
 ```powershell
