@@ -281,3 +281,20 @@ Invoke-Command -ComputerName "NomeComputer" -ScriptBlock { Get-Service } -Creden
 Invoke-Command -ComputerName "PC1", "PC2", "PC3" -ScriptBlock { Get-Service } -Credential (Get-Credential)
 ```
 
+### Autologon (Accesso Automatico)
+
+Imposta l'autologin con Sysinternals Autologon.exe:
+```powershell
+Autologon.exe username domain password /accepteula
+```
+
+> ⚠️ **Nota di sicurezza:**  
+> L'uso di password in chiaro nei comandi o negli script non è sicuro.  
+> Per un autologin più sicuro, imposta le credenziali tramite l'interfaccia di Autologon.exe (esegui senza parametri) e inserisci le informazioni manualmente:  
+> 
+> 1. Avvia `Autologon.exe` come amministratore.
+> 2. Inserisci username, dominio e password.
+> 3. Clicca su "Enable".
+> 
+> In questo modo la password viene salvata in modo cifrato nel registro di sistema.
+
